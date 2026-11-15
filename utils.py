@@ -76,7 +76,8 @@ def printar_menu():
     print('9 - Verificar existência de ciclos')
     print('10 - Calcular caminhos mínimos')
     print('11 - Calcular distância e caminho entre dois vértices')
-    print('12 - Sair\n')
+    print('12 - Verificar circuito Euleriano')
+    print('13 - Sair\n')
 
 
 def iniciar_programa(aux=0):

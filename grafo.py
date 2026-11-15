@@ -263,3 +263,80 @@ class Grafo():
         caminho.reverse()
 
         return distancia, caminho
+
+
+    # ------------------------------------------------------------------
+    # TRABALHO 2 - CIRCUITO EULERIANO
+    # ------------------------------------------------------------------
+
+    #verifica se o grafo possui circuito euleriano. retorna (bool, motivo).
+    #condicoes (grafo nao direcionado): 1) toda aresta esta em uma unica componente conexa
+    #(vertices isolados sao ignorados) e 2) todos os vertices tem grau par.
+    def possui_circuito_euleriano(self):
+        n = self.ordem()
+
+        #grafo sem arestas: nao ha circuito para apresentar
+        if self.tamanho() == 0:
+            return False, 'O grafo não possui arestas.'
+
+        #condicao 2: todos os graus devem ser pares
+        impares = [v for v in range(1, n + 1) if self.grau_vertice(v) % 2 != 0]
+        if impares:
+            return False, f'Existem vértices de grau ímpar: {impares}.'
+
+        #condicao 1: todos os vertices com grau > 0 devem ser alcancados a partir de um deles
+        com_aresta = [v for v in range(n) if any(self.matriz[v][u] != 0 for u in range(n))]
+        visitado = [False] * n
+        pilha = [com_aresta[0]]
+        visitado[com_aresta[0]] = True
+
+        while pilha:
+            atual = pilha.pop()
+            for u in range(n):
+                if self.matriz[atual][u] != 0 and not visitado[u]:
+                    visitado[u] = True
+                    pilha.append(u)
+
+        if not all(visitado[v] for v in com_aresta):
+            return False, 'As arestas estão em mais de uma componente conexa.'
+
+        return True, 'Todos os vértices têm grau par e as arestas estão em uma única componente.'
+
+    #encontra um circuito euleriano com o algoritmo de Hierholzer (versao iterativa, sem recursao,
+    #para suportar grafos de ate 1000 vertices). retorna a lista de vertices (base 1) do circuito,
+    #comecando e terminando no mesmo vertice, ou None se o circuito nao existe.
+    def circuito_euleriano(self, inicio=None):
+        existe, _ = self.possui_circuito_euleriano()
+        if not existe:
+            return None
+
+        n = self.ordem()
+
+        #copia das listas de adjacencia (as arestas serao removidas conforme usadas)
+        adj = [set(u for u in range(n) if self.matriz[v][u] != 0) for v in range(n)]
+
+        if inicio is None:
+            inicio = next(v for v in range(n) if adj[v])
+        else:
+            inicio -= 1
+            if not adj[inicio]:
+                return None #vertice sem arestas nao pode iniciar o circuito
+
+        pilha = [inicio]
+        circuito = []
+
+        while pilha:
+            v = pilha[-1]
+            if adj[v]:
+                u = adj[v].pop() #usa a aresta (v,u)
+                adj[u].remove(v) #remove a mesma aresta no outro sentido
+                pilha.append(u)
+            else:
+                circuito.append(pilha.pop()) #vertice sem arestas livres entra no circuito
+
+        circuito.reverse()
+        return [v + 1 for v in circuito]
+
+    #soma o peso das arestas percorridas por um circuito (util para exibir o custo total)
+    def custo_circuito(self, circuito):
+        return sum(self.matriz[a - 1][b - 1] for a, b in zip(circuito, circuito[1:]))

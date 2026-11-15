@@ -108,6 +108,18 @@ while True:
             count_iteracoes += 1
 
         case 12:
+            existe, motivo = grafo.possui_circuito_euleriano()
+
+            if existe:
+                circuito = grafo.circuito_euleriano()
+                print('Sim, o grafo possui circuito Euleriano!')
+                print(f'Circuito: {circuito}')
+                print(f'Arestas percorridas: {len(circuito) - 1} | Custo total: {grafo.custo_circuito(circuito):.2f}')
+            else:
+                print(f'Não, o grafo não possui circuito Euleriano. Motivo: {motivo}')
+            count_iteracoes += 1
+
+        case 13:
             print('Saindo...')
             break
 
