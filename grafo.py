@@ -340,3 +340,74 @@ class Grafo():
     #soma o peso das arestas percorridas por um circuito (util para exibir o custo total)
     def custo_circuito(self, circuito):
         return sum(self.matriz[a - 1][b - 1] for a, b in zip(circuito, circuito[1:]))
+
+
+    # ------------------------------------------------------------------
+    # TRABALHO 2 - ARVORE GERADORA MINIMA
+    # ------------------------------------------------------------------
+
+    #determina a arvore geradora minima (AGM) com o algoritmo de Kruskal: analisa as arestas da mais leve para a
+    #mais pesada e so aceita a aresta se ela ligar duas componentes diferentes (ou seja, se nao fechar ciclo).
+    #para saber isso usa a estrutura union-find (conjuntos disjuntos), versao iterativa e sem recursao,
+    #para suportar grafos de ate 1000 vertices.
+    #retorna (arestas, custo): 'arestas' e a lista de (u, v, peso) escolhidas (vertices em base 1, na ordem em que
+    #o Kruskal as escolheu) e 'custo' e a soma dos pesos. retorna None se o grafo nao for conexo, ja que a AGM
+    #so existe para grafos conexos.
+    #desempate: arestas de mesmo peso sao analisadas em ordem crescente de (u, v), entao o resultado e sempre o mesmo
+    #(grafos com pesos repetidos podem ter varias AGMs diferentes, todas com o mesmo custo).
+    def arvore_geradora_minima(self):
+        n = self.ordem()
+
+        #junta cada aresta uma unica vez (so o triangulo superior da matriz); peso 0 significa que nao ha aresta
+        todas_arestas = [(self.matriz[i][j], i, j)
+                         for i in range(n)
+                         for j in range(i + 1, n)
+                         if self.matriz[i][j] != 0]
+        todas_arestas.sort() #ordena por peso e, em caso de empate, por (i, j)
+
+        #union-find: cada vertice comeca sozinho no proprio conjunto
+        pai = list(range(n))
+        tamanho = [1] * n
+
+        #acha o representante do conjunto do vertice v, ja achatando o caminho percorrido
+        def representante(v):
+            raiz = v
+            while pai[raiz] != raiz:
+                raiz = pai[raiz]
+
+            while pai[v] != raiz:
+                proximo = pai[v]
+                pai[v] = raiz
+                v = proximo
+
+            return raiz
+
+        arestas_agm = []
+        custo_total = 0
+
+        for peso, i, j in todas_arestas:
+            raiz_i = representante(i)
+            raiz_j = representante(j)
+
+            #mesmo conjunto: a aresta fecharia um ciclo, entao e descartada
+            if raiz_i == raiz_j:
+                continue
+
+            #une os dois conjuntos (o menor passa a apontar para o maior)
+            if tamanho[raiz_i] < tamanho[raiz_j]:
+                raiz_i, raiz_j = raiz_j, raiz_i
+            pai[raiz_j] = raiz_i
+            tamanho[raiz_i] += tamanho[raiz_j]
+
+            arestas_agm.append((i + 1, j + 1, peso))
+            custo_total += peso
+
+            #uma arvore geradora tem exatamente n - 1 arestas, entao nao precisa olhar o resto
+            if len(arestas_agm) == n - 1:
+                break
+
+        #se faltaram arestas para ligar todos os vertices, o grafo nao e conexo
+        if len(arestas_agm) != n - 1:
+            return None
+
+        return arestas_agm, custo_total

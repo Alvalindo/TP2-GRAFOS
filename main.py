@@ -120,6 +120,20 @@ while True:
             count_iteracoes += 1
 
         case 13:
+            resultado = grafo.arvore_geradora_minima()
+
+            if resultado is None:
+                print('O grafo não é conexo, então não possui árvore geradora mínima.')
+            else:
+                arestas_agm, custo_agm = resultado
+                print('Árvore geradora mínima (algoritmo de Kruskal)')
+                print(f'Arestas selecionadas ({len(arestas_agm)}):')
+                for u, v, peso in arestas_agm:
+                    print(f'  {u} - {v} (peso {peso:.2f})')
+                print(f'Custo total da árvore: {custo_agm:.2f}')
+            count_iteracoes += 1
+
+        case 14:
             print('Saindo...')
             break
 
