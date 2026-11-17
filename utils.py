@@ -77,7 +77,8 @@ def printar_menu():
     print('10 - Calcular caminhos mínimos')
     print('11 - Calcular distância e caminho entre dois vértices')
     print('12 - Verificar circuito Euleriano')
-    print('13 - Sair\n')
+    print('13 - Determinar árvore geradora mínima')
+    print('14 - Sair\n')
 
 
 def iniciar_programa(aux=0):
