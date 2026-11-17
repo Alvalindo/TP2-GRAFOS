@@ -431,3 +431,46 @@ class Grafo():
         vertices_max = [v for v, exc in excentricidades.items() if math.isclose(exc, diametro)]
         
         return excentricidades, raio, diametro, vertices_min, vertices_max
+
+    def __adjacencias_cobertura(self):
+        adjacencias = [set() for _ in range(self.vertices)]
+
+        for i in range(self.vertices):
+            for j in range(i + 1, self.vertices):
+                if self.matriz[i][j] != 0:
+                    adjacencias[i].add(j)
+                    adjacencias[j].add(i)
+
+        return adjacencias
+
+    def cobertura_vertices_gulosa(self):
+        adjacencias = self.__adjacencias_cobertura()
+        selecionados = set()
+
+        while any(adjacencias):
+            vertice = max(range(self.vertices), key=lambda v: len(adjacencias[v]))
+            selecionados.add(vertice)
+
+            for vizinho in adjacencias[vertice]:
+                adjacencias[vizinho].remove(vertice)
+            adjacencias[vertice].clear()
+
+        return sorted(v + 1 for v in selecionados)
+
+    def cobertura_vertices_heuristica(self):
+        adjacencias = self.__adjacencias_cobertura()
+        selecionados = set()
+
+        while any(adjacencias):
+            u = next(v for v, vizinhos in enumerate(adjacencias) if vizinhos)
+            v = min(adjacencias[u])
+            selecionados.update((u, v))
+
+            for vizinho in adjacencias[u]:
+                adjacencias[vizinho].remove(u)
+            for vizinho in adjacencias[v]:
+                adjacencias[vizinho].remove(v)
+            adjacencias[u].clear()
+            adjacencias[v].clear()
+
+        return sorted(v + 1 for v in selecionados)

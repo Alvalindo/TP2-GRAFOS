@@ -1,3 +1,4 @@
+from time import perf_counter
 from utils import validar_vertice, iniciar_programa, printar_menu
 
 grafo = iniciar_programa()
@@ -153,6 +154,24 @@ while True:
             count_iteracoes += 1
 
         case 15:
+            inicio = perf_counter()
+            cobertura_gulosa = grafo.cobertura_vertices_gulosa()
+            tempo_guloso = perf_counter() - inicio
+
+            inicio = perf_counter()
+            cobertura_heuristica = grafo.cobertura_vertices_heuristica()
+            tempo_heuristica = perf_counter() - inicio
+
+            print('\nCobertura de vértices - algoritmo guloso')
+            print(f'Vértices selecionados: {cobertura_gulosa}')
+            print(f'Quantidade: {len(cobertura_gulosa)} | Tempo: {tempo_guloso:.6f} s')
+
+            print('\nCobertura de vértices - heurística')
+            print(f'Vértices selecionados: {cobertura_heuristica}')
+            print(f'Quantidade: {len(cobertura_heuristica)} | Tempo: {tempo_heuristica:.6f} s')
+            count_iteracoes += 1
+
+        case 16:
             print('Saindo...')
             break
 
