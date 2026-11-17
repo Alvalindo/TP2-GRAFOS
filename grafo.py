@@ -341,20 +341,6 @@ class Grafo():
     def custo_circuito(self, circuito):
         return sum(self.matriz[a - 1][b - 1] for a, b in zip(circuito, circuito[1:]))
 
-
-    # ------------------------------------------------------------------
-    # TRABALHO 2 - ARVORE GERADORA MINIMA
-    # ------------------------------------------------------------------
-
-    #determina a arvore geradora minima (AGM) com o algoritmo de Kruskal: analisa as arestas da mais leve para a
-    #mais pesada e so aceita a aresta se ela ligar duas componentes diferentes (ou seja, se nao fechar ciclo).
-    #para saber isso usa a estrutura union-find (conjuntos disjuntos), versao iterativa e sem recursao,
-    #para suportar grafos de ate 1000 vertices.
-    #retorna (arestas, custo): 'arestas' e a lista de (u, v, peso) escolhidas (vertices em base 1, na ordem em que
-    #o Kruskal as escolheu) e 'custo' e a soma dos pesos. retorna None se o grafo nao for conexo, ja que a AGM
-    #so existe para grafos conexos.
-    #desempate: arestas de mesmo peso sao analisadas em ordem crescente de (u, v), entao o resultado e sempre o mesmo
-    #(grafos com pesos repetidos podem ter varias AGMs diferentes, todas com o mesmo custo).
     def arvore_geradora_minima(self):
         n = self.ordem()
 
