@@ -78,7 +78,8 @@ def printar_menu():
     print('11 - Calcular distância e caminho entre dois vértices')
     print('12 - Verificar circuito Euleriano')
     print('13 - Determinar árvore geradora mínima')
-    print('14 - Sair\n')
+    print('14 - Calcular métricas de distância (Excentricidade, Raio, Diâmetro)')
+    print('15 - Sair\n')
 
 
 def iniciar_programa(aux=0):

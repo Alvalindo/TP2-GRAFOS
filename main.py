@@ -134,6 +134,25 @@ while True:
             count_iteracoes += 1
 
         case 14:
+            print('\nCalculando métricas de distância...')
+            resultado = grafo.metricas_distancia()
+            
+            if resultado is None:
+                print('O grafo não é conexo, então as métricas de distância não estão definidas.')
+            else:
+                excentricidades, raio, diametro, v_min, v_max = resultado
+                
+                print(f'Raio do grafo: {raio:.2f}')
+                print(f'Diâmetro do grafo: {diametro:.2f}')
+                print(f'Vértices com menor excentricidade (Raio): {v_min}')
+                print(f'Vértices com maior excentricidade (Diâmetro): {v_max}')
+                print('\nExcentricidade de cada vértice:')
+                for v, exc in excentricidades.items():
+                    print(f'  Vértice {v}: {exc:.2f}')
+            
+            count_iteracoes += 1
+
+        case 15:
             print('Saindo...')
             break
 

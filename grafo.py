@@ -1,4 +1,5 @@
 from collections import deque
+import math
 
 class Grafo():
 
@@ -397,3 +398,36 @@ class Grafo():
             return None
 
         return arestas_agm, custo_total
+
+
+    # MÉTRICAS DE DISTÂNCIA
+    def excentricidade(self, vertice):
+        resultados = self.caminhos_minimos(vertice)
+
+        # Filtra as distâncias, ignorando a distância para ele mesmo e vértices inalcançáveis
+        distancias = [dist for _, dist in resultados if dist > 0 and dist != float('inf')]
+        
+        if not distancias:
+            return 0            
+        return max(distancias)
+
+    def metricas_distancia(self):
+        n = self.ordem()
+        
+        # Checa se o grafo é conexo antes de calcular tudo
+        # Se alguma distância a partir do vértice 1 for infinita, tem vértice isolado
+        resultados_v1 = self.caminhos_minimos(1)
+        if any(dist == float('inf') for _, dist in resultados_v1):
+            return None # Avisa o main.py que o grafo é desconexo
+
+        excentricidades = {}
+        for v in range(1, n + 1):
+            excentricidades[v] = self.excentricidade(v)
+            
+        raio = min(excentricidades.values())
+        diametro = max(excentricidades.values())
+        
+        vertices_min = [v for v, exc in excentricidades.items() if math.isclose(exc, raio)]
+        vertices_max = [v for v, exc in excentricidades.items() if math.isclose(exc, diametro)]
+        
+        return excentricidades, raio, diametro, vertices_min, vertices_max
